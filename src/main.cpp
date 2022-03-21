@@ -26,7 +26,6 @@ void setup() {
   Serial.begin(115200);
   artnet.begin(mac, ip);
   artnet.setBroadcast(broadcast);
-  delay(1000);
   
   // FastLED.addLeds<WS2812, LED_PIN, RGB>(leds, NUM_LEDS);
   FastLED.addLeds<NUM_STRIPS, WS2812B, LED_PIN, RGB>(leds, NUM_LEDS);
@@ -82,16 +81,3 @@ void loop() {
 // Maak verbinding met ethernet
 // NativeEthernet.h
 // https://forum.pjrc.com/threads/62400-Teensy-4-1-IP-Address
-
-
-// Artnet toepassing
-
-
-// IP address
-// https://www.browserling.com/tools/random-ip
-// 153.37.96.222
-
-// Mac address
-// https://www.browserling.com/tools/random-mac
-// e1:3a:d5:0e:37:19
-// byte mac[] = {0x04, 0xE9, 0xE5, 0x00, 0x69, 0xEC}; // falty
