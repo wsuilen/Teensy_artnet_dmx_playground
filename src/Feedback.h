@@ -5,7 +5,7 @@
 
 class Feedback {
     public:
-    void print_dmx_info(Artnet artnet);
+    void print_dmx_info(Artnet& artnet);
 };
 
 #endif 

@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include <Artnet.h>
 
-void Feedback::print_dmx_info(Artnet artnet) {
+void Feedback::print_dmx_info(Artnet& artnet) {
     Serial.print("universe number = ");
     Serial.print(artnet.getUniverse());
     Serial.print("\tdata length = ");

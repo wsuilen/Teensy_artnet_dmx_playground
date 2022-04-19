@@ -6,12 +6,17 @@
 #include <SPI.h>
 #include "Feedback.h"
 #include "Dmx_controller.h"
+#include "Ledstrip.h"
 
-#define LED_PIN 7
-#define NUM_LEDS 13
-#define NUM_STRIPS 1
+const uint8_t ledpin = 7; // hoe krijg ik deze toegankelijk in classes?
+// #define NUM_LEDS 13
+// #define NUM_STRIPS 1
 
-CRGB leds[NUM_LEDS]; // creates a CRGB representation for every led in an array
+// Ledstrip ledstrip_1(13, 7);
+
+// Ledstrip ledstrips[] = {ledstrip_1};
+const int amount_of_leds = 13;
+CRGB leds[amount_of_leds];
 
 Artnet artnet;
 byte ip[] = {192, 168, 0, 199};        // Teensy
@@ -25,14 +30,9 @@ uint8_t dmxFrame3 = 0;
 uint8_t dmxFrame4 = 0;
 
 int artnet_length = artnet.getLength();
-int amount_of_rgb_leds = NUM_LEDS * 3;
 
 Dmx_controller dmx_controller;
 Feedback feedback;
-
-int r = 0;
-int g = 0;
-int b = 0;
 
 void setup()
 {
@@ -40,13 +40,12 @@ void setup()
   artnet.begin(mac, ip);
   artnet.setBroadcast(broadcast);
 
-  // FastLED.addLeds<WS2812, LED_PIN, RGB>(leds, NUM_LEDS);
-  FastLED.addLeds<NUM_STRIPS, WS2812B, LED_PIN, RGB>(leds, NUM_LEDS);
+  FastLED.addLeds<1, WS2812B, 7, RGB>(leds, 13);
   FastLED.setBrightness(50);
   FastLED.setMaxPowerInVoltsAndMilliamps(12, 500);
-  fill_solid(leds, NUM_LEDS, CRGB::Black);
-  // FastLED.clear();
+  fill_solid(leds, 13, CRGB::Black);
   FastLED.show();
+
 }
 
 void loop()
@@ -58,70 +57,9 @@ void loop()
   //   Serial.println("Poll");
   // }
 
-  // hardcoded red leds
-  int rgbred[39] = {255, 0, 0, 255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,};
-  int rgbblue[39] = {0, 0, 255, 0, 0, 255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255, 0, 0,255};
-
-  // for (int i = 0; i < 39; ++i)
-  // {
-  //   if (i % 3 == 0) {
-  //     rgbs[i] = 255;
-  //   } else {
-  //     rgbs[i] = 0;
-  //   }
-  //   Serial.print(rgbs[i] + "\n");
-    
-  // }
-  
-
   if (incoming_packet == ART_DMX && artnet.getUniverse() == universe)
   {
-
-    int r = 0;
-    int g = 0;
-    int b = 0;
-
-    int j = 0;
-
-    for (int i = 0; i < amount_of_rgb_leds; ++i)
-    {
-      if (i % 3 == 0)
-      {
-        r = artnet.getDmxFrame()[i];
-        // r = rgbblue[i];
-      }
-      else if (i % 3 == 1)
-      {
-        g = artnet.getDmxFrame()[i];
-        // g = rgbblue[i];
-      }
-      else if (i % 3 == 2)
-      {
-        b = artnet.getDmxFrame()[i];
-        // b = rgbblue[i];
-        leds[j].setRGB(r, g, b);
-        ++j;
-      }
-    }
-    FastLED.show();
-
-        
-    Serial.print("universe number = ");
-    Serial.print(artnet.getUniverse());
-    Serial.print("\tdata length = ");
-    Serial.print(artnet.getLength());
-    Serial.print("\tsequence n0. = ");
-    Serial.println(artnet.getSequence());
-    Serial.print("DMX data: ");
-    for (int i = 0 ; i < artnet.getLength() ; i++)
-    {
-      Serial.print(artnet.getDmxFrame()[i]);
-      Serial.print("  ");
-    }
-    Serial.println();
-    Serial.println();
-
-    // dmx_controller.set_leds_by_artnet(leds, artnet);
+    dmx_controller.set_leds_by_artnet(artnet, leds);
     // feedback.print_dmx_info(artnet);
   }
 }
