@@ -6,6 +6,7 @@
 #include <SPI.h>
 #include "Feedback.h"
 #include "Dmx_controller.h"
+#include "Dmx_controller_switch.h"
 #include "Ledstrip.h"
 
 const uint8_t ledpin = 7; // hoe krijg ik deze toegankelijk in classes?
@@ -27,6 +28,7 @@ uint16_t universe = 1;
 int artnet_length = artnet.getLength();
 
 Dmx_controller dmx_controller;
+Dmx_controller_switch dmx_controller_switch;
 Feedback feedback;
 
 void setup()
@@ -48,7 +50,7 @@ void loop()
 
   if (incoming_packet == ART_DMX && artnet.getUniverse() == universe)
   {
-    dmx_controller.set_leds_by_artnet(artnet, leds);
+    dmx_controller_switch.set_leds_by_artnet(artnet, leds);
     // feedback.print_dmx_info(artnet);
   }
 }
