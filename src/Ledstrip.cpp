@@ -1,14 +1,22 @@
 #include "Ledstrip.h"
 #include <FastLED.h>
 
-Ledstrip::Ledstrip(int _amount_of_leds, int _led_pin)
+Ledstrip::Ledstrip(int _amount_of_leds, int _led_pin, uint8_t * _universes)
 {
     amount_of_leds = _amount_of_leds;
-    amount_of_leds_ptr = &amount_of_leds;
     led_pin = _led_pin;
-    led_pin_ptr = &led_pin;
     CRGB leds[amount_of_leds];
-    configure_fastled();
+    universes[0] = _universes[0];
+    universes[1] = _universes[1];
+}
+
+Ledstrip::Ledstrip() {
+    amount_of_leds = 13;
+    led_pin = 7;
+    leds[amount_of_leds];
+    universes[0] = 1;
+    universes[1] = 2;
+
 }
 
 CRGB * Ledstrip::get_leds() {
@@ -19,11 +27,6 @@ int Ledstrip::get_amount_of_leds() {
     return amount_of_leds;
 }
 
-void Ledstrip::configure_fastled() {
-// FastLED.addLeds<WS2812, LED_PIN, RGB>(leds, NUM_LEDS);
-  FastLED.addLeds<1, WS2812B, 7, RGB>(leds, 13); // 'this' cannot be used in a constant expressionC/C++(2435) ??
-  FastLED.setBrightness(50);
-  FastLED.setMaxPowerInVoltsAndMilliamps(12, 500);
-  fill_solid(leds, amount_of_leds, CRGB::Black);
-  FastLED.show();
+uint8_t * Ledstrip::get_universe() {
+    return universes;
 }

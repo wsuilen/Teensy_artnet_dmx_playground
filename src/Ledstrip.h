@@ -7,16 +7,16 @@ class Ledstrip
 {
 private:
     int amount_of_leds;
-    int * amount_of_leds_ptr;
     int led_pin;
-    int * led_pin_ptr;
-    CRGB leds[];
+    CRGB leds[13];
+    uint8_t universes[2];
 
 public:
-    Ledstrip(const int _amount_of_leds, const int led_pin);
-    CRGB * get_leds();
+    Ledstrip(int _amount_of_leds, int _led_pin, uint8_t * _universes);
+    Ledstrip();
     int get_amount_of_leds();
-    void configure_fastled();
+    CRGB * get_leds();
+    uint8_t * get_universe();
 };
 
 #endif
