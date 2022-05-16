@@ -8,7 +8,7 @@
 
 class Ledstrip_controller
 {
-    Artnet_data_retriever artnet_data_retriever;
+    Artnet_data_retriever * artnet_data_retriever = new Artnet_data_retriever();
     Ledstrip ledstrips[6];
 
 public:

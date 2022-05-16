@@ -9,12 +9,17 @@
 
 Ledstrip_controller ledstrip_controller;
 Feedback feedback;
+Artnet artnet;
 
 void setup()
 {
   Serial.begin(115200);
+  Serial.println("Setup");
+  Serial.println("Configure Fastled\n");
   ledstrip_controller.configure_fastled();
+  Serial.println("Configure Artnet\n");
   ledstrip_controller.configure_artnet();
+  Serial.println("\nLoop\n");
 }
 
 void loop()

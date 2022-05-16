@@ -1,13 +1,14 @@
 #include "Ledstrip_controller.h"
+#include "Feedback.h"
 
 Ledstrip_controller::Ledstrip_controller()
-{
-  uint8_t universes1[] = {0, 1};
-  uint8_t universes2[] = {2, 3};
-  uint8_t universes3[] = {4, 5};
-  uint8_t universes4[] = {6, 7};
-  uint8_t universes5[] = {8, 9};
-  uint8_t universes6[] = {10, 11};
+{ 
+  int universes1[] = {1, 2};
+  int universes2[] = {3, 4};
+  int universes3[] = {5, 6};
+  int universes4[] = {7, 8};
+  int universes5[] = {9, 10};
+  int universes6[] = {11, 12};
 
   Ledstrip l1 = Ledstrip(13, 7, universes1);
   Ledstrip l2 = Ledstrip(13, 7, universes2);
@@ -45,26 +46,67 @@ void Ledstrip_controller::configure_fastled()
     FastLED.setMaxPowerInVoltsAndMilliamps(12, 500);
     fill_solid(ledstrips[i].get_leds(), ledstrips[i].get_amount_of_leds(), CRGB::Black);
     FastLED.show();
+    Serial.printf("Led: %d\n", i);
+    Serial.printf("Ledpin: %d\n", ledstrips[i].get_led_pin());
+    Serial.printf("Amount of leds: %d\n\n", ledstrips[i].get_amount_of_leds());
   }
 }
 
 void Ledstrip_controller::configure_artnet()
 {
-  artnet_data_retriever.get_artnet().begin(artnet_data_retriever.get_mac(), artnet_data_retriever.get_ip());
-  artnet_data_retriever.get_artnet().setBroadcast(artnet_data_retriever.get_broadcast());
+  Artnet * artnet = &artnet_data_retriever->get_artnet();
+  artnet->begin(artnet_data_retriever->get_mac(), artnet_data_retriever->get_ip());
+  artnet->setBroadcast(artnet_data_retriever->get_broadcast());
+
+  // Debugging
+  Serial.print("Mac address: ");
+  Serial.print(artnet_data_retriever->get_mac()[0]);
+  Serial.print("\t");
+  Serial.print(artnet_data_retriever->get_mac()[1]);
+  Serial.print("\t");
+  Serial.print(artnet_data_retriever->get_mac()[2]);
+  Serial.print("\t");
+  Serial.print(artnet_data_retriever->get_mac()[3]);
+  Serial.print("\t");
+  Serial.print(artnet_data_retriever->get_mac()[4]);
+  Serial.print("\t");
+  Serial.print(artnet_data_retriever->get_mac()[5]);
+  Serial.print("\n");
+
+  Serial.print("IPv4 address: ");
+  Serial.print(artnet_data_retriever->get_ip()[0]);
+  Serial.print("\t");
+  Serial.print(artnet_data_retriever->get_ip()[1]);
+  Serial.print("\t");
+  Serial.print(artnet_data_retriever->get_ip()[2]);
+  Serial.print("\t");
+  Serial.print(artnet_data_retriever->get_ip()[3]);
+  Serial.print("\n");
+
+  Serial.printf("Broadcast address: ");
+  Serial.print(artnet_data_retriever->get_broadcast()[0]);
+  Serial.print("\t");
+  Serial.print(artnet_data_retriever->get_broadcast()[1]);
+  Serial.print("\t");
+  Serial.print(artnet_data_retriever->get_broadcast()[2]);
+  Serial.print("\t");
+  Serial.print(artnet_data_retriever->get_broadcast()[3]);
+  Serial.print("\n");
 }
 
 void Ledstrip_controller::set_leds_by_artnet()
 {
   // So far only one ledstrip will be controlled. There needs to be a class for the handling of universes.
-  Artnet artnet = artnet_data_retriever.get_artnet();
-
+  Artnet artnet = artnet_data_retriever->get_artnet();
   uint16_t incoming_packet = artnet.read();
   int universe = ledstrips[0].get_universe()[0];
+  // Serial.print("Universe: ");
+  // Serial.print(universe);
+  // Serial.print("\n");
 
-  // if (incoming_packet == ART_POLL) { // checks if incoming_packet contains the art_net protocol
-  //   Serial.println("Poll");
-  // }
+  if (incoming_packet == ART_POLL) { // checks if incoming_packet contains the art_net protocol
+    Serial.println("Poll");
+  }
 
   if (incoming_packet == ART_DMX && artnet.getUniverse() == universe)
   {
