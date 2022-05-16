@@ -9,7 +9,6 @@
 
 Ledstrip_controller ledstrip_controller;
 Feedback feedback;
-Artnet artnet;
 
 void setup()
 {

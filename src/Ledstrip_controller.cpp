@@ -2,7 +2,7 @@
 #include "Feedback.h"
 
 Ledstrip_controller::Ledstrip_controller()
-{ 
+{
   int universes1[] = {1, 2};
   int universes2[] = {3, 4};
   int universes3[] = {5, 6};
@@ -54,7 +54,7 @@ void Ledstrip_controller::configure_fastled()
 
 void Ledstrip_controller::configure_artnet()
 {
-  Artnet * artnet = &artnet_data_retriever->get_artnet();
+  Artnet *artnet = &artnet_data_retriever->get_artnet();
   artnet->begin(artnet_data_retriever->get_mac(), artnet_data_retriever->get_ip());
   artnet->setBroadcast(artnet_data_retriever->get_broadcast());
 
@@ -97,19 +97,40 @@ void Ledstrip_controller::configure_artnet()
 void Ledstrip_controller::set_leds_by_artnet()
 {
   // So far only one ledstrip will be controlled. There needs to be a class for the handling of universes.
-  Artnet artnet = artnet_data_retriever->get_artnet();
-  uint16_t incoming_packet = artnet.read();
+  Artnet *artnet = &artnet_data_retriever->get_artnet();
+  uint16_t incoming_packet = artnet->read();
   int universe = ledstrips[0].get_universe()[0];
-  // Serial.print("Universe: ");
-  // Serial.print(universe);
-  // Serial.print("\n");
+  universe = 22292;
+  Serial.print("universe number = ");
+  Serial.print(artnet->getUniverse());
+  Serial.println();
+  Serial.print("incoming packet = ");
+  Serial.print(incoming_packet);
+  Serial.println();
+  delay(1000);
+  // Serial.print("\tdata length = ");
+  // Serial.print(artnet->getLength());
+  // Serial.print("\tsequence n0. = ");
+  // Serial.println(artnet->getSequence());
+  // Serial.print("DMX data: ");
+  // for (int i = 0; i < artnet->getLength(); i++)
+  // {
+  //   Serial.print(artnet->getDmxFrame()[i]);
+  //   Serial.print("  ");
+  // }
+  // Serial.println();
+  // Serial.println();
 
-  if (incoming_packet == ART_POLL) { // checks if incoming_packet contains the art_net protocol
+  if (incoming_packet == ART_POLL)
+  { // checks if incoming_packet contains the art_net protocol
     Serial.println("Poll");
   }
 
-  if (incoming_packet == ART_DMX && artnet.getUniverse() == universe)
+  if (incoming_packet == ART_DMX && artnet->getUniverse() == universe)
   {
+    Serial.println("incoming_packet == ART_DMX && artnet->getUniverse() == universe");
+    Serial.println("statement is True");
+
     uint16_t r = 0;
     uint16_t g = 0;
     uint16_t b = 0;
@@ -121,15 +142,15 @@ void Ledstrip_controller::set_leds_by_artnet()
     {
       if (i % 3 == 0)
       {
-        r = artnet.getDmxFrame()[i];
+        r = artnet->getDmxFrame()[i];
       }
       else if (i % 3 == 1)
       {
-        g = artnet.getDmxFrame()[i];
+        g = artnet->getDmxFrame()[i];
       }
       else if (i % 3 == 2)
       {
-        b = artnet.getDmxFrame()[i];
+        b = artnet->getDmxFrame()[i];
         ledstrips[0].get_leds()[j].setRGB(r, g, b);
         ++j;
       }
