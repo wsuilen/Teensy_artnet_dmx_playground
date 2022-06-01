@@ -100,9 +100,11 @@ void Ledstrip_controller::set_leds_by_artnet()
   Artnet *artnet = &artnet_data_retriever->get_artnet();
   uint16_t incoming_packet = artnet->read();
   int universe = ledstrips[0].get_universe()[0];
-  universe = 22292;
   Serial.print("universe number = ");
   Serial.print(artnet->getUniverse());
+  Serial.println();
+  Serial.print("led universe number = ");
+  Serial.print(universe);
   Serial.println();
   Serial.print("incoming packet = ");
   Serial.print(incoming_packet);
