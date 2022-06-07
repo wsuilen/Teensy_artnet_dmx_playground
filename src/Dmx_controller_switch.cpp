@@ -26,10 +26,6 @@ void Dmx_controller_switch::set_leds_by_artnet(Artnet &artnet, CRGB *leds)
       case 2:
         b = artnet.getDmxFrame()[i];
         break;
-      default:
-        r = 0;
-        g = 0;
-        b = 0;
       }
       ++i;
     }
